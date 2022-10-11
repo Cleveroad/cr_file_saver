@@ -1,0 +1,28 @@
+name: cr_file_saver
+description: Allows to save files on Android and IOS devices
+version: 0.0.1
+homepage: https://github.com/Cleveroad/cr_file_saver
+
+environment:
+  sdk: ">=2.17.6 <3.0.0"
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+  pigeon: ^3.2.6
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.cleveroad.cr_file_saver
+        pluginClass: CrFileSaverPlugin
+      ios:
+        pluginClass: CrFileSaverPlugin
