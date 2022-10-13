@@ -4,8 +4,8 @@ version: 0.0.1
 homepage: https://github.com/Cleveroad/cr_file_saver
 
 environment:
-  sdk: ">=2.17.6 <3.0.0"
-  flutter: ">=2.5.0"
+  sdk: ">=2.17.0 <3.0.0"
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:
