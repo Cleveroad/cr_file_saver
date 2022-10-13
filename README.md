@@ -17,7 +17,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  cr_file_saver: ^0.0.1
+  cr_file_saver: ^0.0.1+1
 ```
 
 If you are using android 9 and below add this permission to project manifest:
