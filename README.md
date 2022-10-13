@@ -1,5 +1,5 @@
 # cr_file_saver
-![Header image](/assets/cr_file_saver.png)
+![Header image](https://github.com/Cleveroad/cr_file_saver/raw/main/images/cr_file_saver.png)
 
 ## Cleveroad introduces file saver for Flutter
 
