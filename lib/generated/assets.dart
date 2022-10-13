@@ -2,6 +2,6 @@
 class Assets {
   Assets._();
 
-  static const String assetsCrFileSaver = 'assets/cr_file_saver.png';
+  static const String assetsCrFileSaver = 'images/cr_file_saver.png';
 
 }
