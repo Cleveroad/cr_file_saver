@@ -48,25 +48,25 @@ class SaveFileDialogParams {
 
 class _FileSaverApiCodec extends StandardMessageCodec {
   const _FileSaverApiCodec();
+
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
     if (value is SaveFileDialogParams) {
       buffer.putUint8(128);
       writeValue(buffer, value.encode());
-    } else 
-{
+    } else {
       super.writeValue(buffer, value);
     }
   }
+
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128:       
+      case 128:
         return SaveFileDialogParams.decode(readValue(buffer)!);
-      
-      default:      
+
+      default:
         return super.readValueOfType(type, buffer);
-      
     }
   }
 }
@@ -75,24 +75,36 @@ class FileSaverApi {
   /// Constructor for [FileSaverApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  FileSaverApi({BinaryMessenger? binaryMessenger}) : _binaryMessenger = binaryMessenger;
+  FileSaverApi({BinaryMessenger? binaryMessenger})
+      : _binaryMessenger = binaryMessenger;
 
   final BinaryMessenger? _binaryMessenger;
 
   static const MessageCodec<Object?> codec = _FileSaverApiCodec();
 
-  Future<String?> saveFile(String arg_filePath, String? arg_destinationFileName) async {
+  /// Silent saving file into:
+  /// * Downloads directory (only Android)
+  /// * Document folder (only IOS) - downloaded files will be showed in Files App on iOS
+  ///
+  /// Parameters:
+  /// * [filePath] - absolute source file path.
+  /// * [destinationFileName] - file name with extension (e.g. file.pdf)
+  Future<String?> saveFile(
+      String arg_filePath, String? arg_destinationFileName) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.FileSaverApi.saveFile', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.FileSaverApi.saveFile', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
-        await channel.send(<Object?>[arg_filePath, arg_destinationFileName]) as Map<Object?, Object?>?;
+        await channel.send(<Object?>[arg_filePath, arg_destinationFileName])
+            as Map<Object?, Object?>?;
     if (replyMap == null) {
       throw PlatformException(
         code: 'channel-error',
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -103,9 +115,21 @@ class FileSaverApi {
     }
   }
 
+  /// In Android 5 return result of `ContextCompat.checkSelfPermission`
+  /// Firstly, you need add permission into AndroidManifest.xml
+  ///
+  /// `<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />`
+  ///
+  /// In Android 6-9 will be showed permission request dialog
+  /// In Android 10 and later nothing won't be showed because Scoped Storage doesn't
+  /// require permission
+  ///
+  /// On ios platform always returns true
   Future<bool?> requestWriteExternalStoragePermission() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.FileSaverApi.requestWriteExternalStoragePermission', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.FileSaverApi.requestWriteExternalStoragePermission',
+        codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(null) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -114,7 +138,8 @@ class FileSaverApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -125,9 +150,18 @@ class FileSaverApi {
     }
   }
 
+  /// Save file through standard file saving dialog
+  ///
+  /// But you should consider:
+  ///
+  /// 1. For using this method you shouldn't specify android.permission.WRITE_EXTERNAL_STORAGE (only android)
+  /// 2. On Android if your phone can't handle `Intent.ACTION_CREATE_DOCUMENT`
+  /// (e.g. devices with api 30 or higher)
+  /// you will receive an exception with code [NoResolvedActivityException]
   Future<String?> saveFileWithDialog(SaveFileDialogParams arg_params) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.FileSaverApi.saveFileWithDialog', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.FileSaverApi.saveFileWithDialog', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_params]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -136,7 +170,8 @@ class FileSaverApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
