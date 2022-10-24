@@ -3,5 +3,4 @@ class Assets {
   Assets._();
 
   static const String assetsCrFileSaver = 'images/cr_file_saver.png';
-
 }
