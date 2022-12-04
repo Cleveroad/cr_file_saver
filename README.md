@@ -26,6 +26,17 @@ If you are using android 9 and below add this permission to project manifest:
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 ```
 
+If you are using iOS 15 or higher add these permissions to Info.plist:
+
+```xml
+    <key>UISupportsDocumentBrowser</key>
+	  <true/>
+	  <key>LSSupportsOpeningDocumentsInPlace</key>
+	  <true/>
+	  <key>UIFileSharingEnabled</key>
+	  <true/>
+```
+
 In your dart file add the following import:
 
 ```dart
