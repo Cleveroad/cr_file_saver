@@ -1,3 +1,8 @@
+## 0.0.2
+
+- Fixed missing destination name parameter
+- Added <queries> into AndroidManifest.xml
+
 ## 0.0.1+2
 
 - Fix pub points

@@ -5,5 +5,9 @@ import java.io.File
 
 interface FileSaverPluginCallback {
     fun onRequestPermission(result: Pigeon.Result<Boolean>?)
-    fun onSaveFileDialog(sourceFile: File, result: Pigeon.Result<String>?)
+    fun onSaveFileDialog(
+        sourceFile: File,
+        result: Pigeon.Result<String>?,
+        destinationFileName: String?
+    )
 }

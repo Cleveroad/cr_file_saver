@@ -1,3 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.cleveroad.cr_file_saver">
+    package="com.cleveroad.cr_file_saver">
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.CREATE_DOCUMENT" />
+            <data android:mimeType="*/*" />
+            <category android:name="android.intent.category.OPENABLE" />
+        </intent>
+    </queries>
 </manifest>

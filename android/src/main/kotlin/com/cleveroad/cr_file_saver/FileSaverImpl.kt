@@ -66,7 +66,7 @@ class FileSaverImpl(private val context: Context, private val callback: FileSave
         result: Pigeon.Result<String>?
     ) {
         val sourceFile = File(params.sourceFilePath)
-        callback.onSaveFileDialog(sourceFile, result)
+        callback.onSaveFileDialog(sourceFile, result, params.destinationFileName)
     }
 
     @Suppress("DEPRECATION")
