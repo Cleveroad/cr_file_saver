@@ -1,7 +1,7 @@
-## 0.0.2
+## 0.0.2+1
 
 - Fixed missing destination name parameter
-- Added <queries> into AndroidManifest.xml
+- Added queries into AndroidManifest.xml
 
 ## 0.0.1+2
 
