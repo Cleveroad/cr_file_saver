@@ -81,10 +81,14 @@ class CrFileSaverPlugin : FlutterPlugin, MethodCallHandler, AbstractActivityAwar
         }
     }
 
-    override fun onSaveFileDialog(sourceFile: File, result: Pigeon.Result<String>?) {
+    override fun onSaveFileDialog(
+        sourceFile: File,
+        result: Pigeon.Result<String>?,
+        destinationFileName: String?
+    ) {
         Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            putExtra(Intent.EXTRA_TITLE, getFileName(sourceFile.path))
+            putExtra(Intent.EXTRA_TITLE, destinationFileName ?: getFileName(sourceFile.path))
             type = "*/*"
         }.let {
             this.sourceFile = sourceFile
