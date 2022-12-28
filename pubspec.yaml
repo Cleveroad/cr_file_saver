@@ -1,6 +1,6 @@
 name: cr_file_saver
 description: Allows to save files on Android and IOS devices and request permission if needed.
-version: 0.0.2
+version: 0.0.2+1
 homepage: https://github.com/Cleveroad/cr_file_saver
 
 environment:
