@@ -1,15 +1,20 @@
 package com.cleveroad.cr_file_saver
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.MediaStore
+
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import com.cleveroad.cr_file_saver.base.AbstractActivityAware
 import com.cleveroad.cr_file_saver.base.FileSaverPluginCallback
 import com.cleveroad.cr_file_saver.utils.getFileName
+import com.cleveroad.cr_file_saver.utils.getFileNameWithoutExtension
+import com.cleveroad.cr_file_saver.utils.getMimeType
 import com.cleveroad.cr_file_saver.utils.saveFileInBackground
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -19,6 +24,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import java.io.File
+import kotlin.math.log
 
 /** CrFileSaverPlugin */
 class CrFileSaverPlugin : FlutterPlugin, MethodCallHandler, AbstractActivityAware(),
@@ -82,14 +88,18 @@ class CrFileSaverPlugin : FlutterPlugin, MethodCallHandler, AbstractActivityAwar
     }
 
     override fun onSaveFileDialog(
-        sourceFile: File,
-        result: Pigeon.Result<String>?,
-        destinationFileName: String?
+            context: Context,
+            sourceFile: File,
+            result: Pigeon.Result<String>?,
+            destinationFileName: String?
     ) {
+        val mimeType = getMimeType(context, sourceFile.path);
+        val fileNameWithoutExtension = destinationFileName?.let { getFileNameWithoutExtension(it) } ?: getFileNameWithoutExtension(getFileName(sourceFile.path));
         Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            putExtra(Intent.EXTRA_TITLE, destinationFileName ?: getFileName(sourceFile.path))
-            type = "*/*"
+            putExtra(Intent.EXTRA_TITLE, fileNameWithoutExtension)
+            putExtra(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+            type = mimeType
         }.let {
             this.sourceFile = sourceFile
             this.saveFilePendingResult = result
