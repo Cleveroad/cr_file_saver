@@ -93,23 +93,46 @@ class CrFileSaverPlugin : FlutterPlugin, MethodCallHandler, AbstractActivityAwar
             result: Pigeon.Result<String>?,
             destinationFileName: String?
     ) {
-        val mimeType = getMimeType(context, sourceFile.path);
-        val fileNameWithoutExtension = destinationFileName?.let { getFileNameWithoutExtension(it) } ?: getFileNameWithoutExtension(getFileName(sourceFile.path));
-        Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            putExtra(Intent.EXTRA_TITLE, fileNameWithoutExtension)
-            putExtra(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-            type = mimeType
-        }.let {
-            this.sourceFile = sourceFile
-            this.saveFilePendingResult = result
+        val mimeType = getMimeType(context, sourceFile.path)
+        if (mimeType == null) {
+            Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                putExtra(Intent.EXTRA_TITLE, destinationFileName ?: getFileName(sourceFile.path))
+                type = "*/*"
+            }.let {
+                this.sourceFile = sourceFile
+                this.saveFilePendingResult = result
 
-            activity?.let { activity ->
-                // Checking for available activity to handle
-                if (it.resolveActivity(activity.packageManager) != null) {
-                    activity.startActivityForResult(it, SAVEFILE_REQCODE)
-                } else {
-                    result?.error(NoResolvedActivityException())
+                activity?.let { activity ->
+                    // Checking for available activity to handle
+                    if (it.resolveActivity(activity.packageManager) != null) {
+                        activity.startActivityForResult(it, SAVEFILE_REQCODE)
+                    } else {
+                        result?.error(NoResolvedActivityException())
+                    }
+                }
+            }
+        } else {
+            val fileNameWithoutExtension =
+                    destinationFileName?.let { getFileNameWithoutExtension(it) }
+                            ?: getFileNameWithoutExtension(getFileName(sourceFile.path))
+
+            Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                putExtra(Intent.EXTRA_TITLE, fileNameWithoutExtension)
+                putExtra(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+                type = mimeType
+            }.let {
+                this.sourceFile = sourceFile
+                this.saveFilePendingResult = result
+
+                activity?.let { activity ->
+                    // Checking for available activity to handle
+                    if (it.resolveActivity(activity.packageManager) != null) {
+                        activity.startActivityForResult(it, SAVEFILE_REQCODE)
+                    } else {
+                        result?.error(NoResolvedActivityException())
+                    }
                 }
             }
         }
