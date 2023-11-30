@@ -20,6 +20,14 @@ fun getFileName(url: String): String {
     val last = segments.last();
     return last
 }
+// get file name without extension
+fun getFileNameWithoutExtension(fileName: String): String {
+    val lastIndex = fileName.lastIndexOf('.')
+    if (lastIndex != -1) {
+        return fileName.substring(0, lastIndex)
+    }
+    return fileName
+}
 
 // Only used in old APIs
 @Suppress("DEPRECATION")
